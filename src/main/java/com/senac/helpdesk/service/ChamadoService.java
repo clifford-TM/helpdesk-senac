@@ -14,7 +14,9 @@ import com.senac.helpdesk.model.StatusChamado;
 import com.senac.helpdesk.model.Usuario;
 import com.senac.helpdesk.repository.ChamadoRepository;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ChamadoService {
 
     private final ChamadoRepository chamadoRepository;
@@ -23,43 +25,55 @@ public class ChamadoService {
         this.chamadoRepository = chamadoRepository;
     }
 
-    public void abrirChamado(Chamado chamado) {
+    public Chamado abrirChamado(Chamado chamado) {
 
         if (chamado.getTitulo() == null || chamado.getTitulo().isBlank()) {
-            throw new IllegalArgumentException("O título do chamado é obrigatório.");
+            throw new IllegalArgumentException(
+                    "O título do chamado é obrigatório."
+            );
         }
 
         if (chamado.getSolicitante() == null) {
-            throw new IllegalArgumentException("O solicitante é obrigatório.");
+            throw new IllegalArgumentException(
+                    "O solicitante é obrigatório."
+            );
         }
 
         chamado.setStatus(StatusChamado.ABERTO);
 
-        chamadoRepository.salvar(chamado);
+        return chamadoRepository.save(chamado);
     }
 
-    public void atribuirTecnico(int chamadoId, Usuario tecnico) {
+    public Chamado atribuirTecnico(Integer chamadoId, Usuario tecnico) {
 
         Chamado chamado = buscarChamadoPorId(chamadoId);
 
         if (chamado == null) {
-            throw new IllegalArgumentException("Chamado não encontrado.");
+            throw new IllegalArgumentException(
+                    "Chamado não encontrado."
+            );
         }
 
         if (tecnico == null) {
-            throw new IllegalArgumentException("O técnico é obrigatório.");
+            throw new IllegalArgumentException(
+                    "O técnico é obrigatório."
+            );
         }
 
         chamado.setTecnico(tecnico);
         chamado.setStatus(StatusChamado.EM_ATENDIMENTO);
+
+        return chamadoRepository.save(chamado);
     }
 
-    public void concluirChamado(int chamadoId) {
+    public Chamado concluirChamado(Integer chamadoId) {
 
         Chamado chamado = buscarChamadoPorId(chamadoId);
 
         if (chamado == null) {
-            throw new IllegalArgumentException("Chamado não encontrado.");
+            throw new IllegalArgumentException(
+                    "Chamado não encontrado."
+            );
         }
 
         if (chamado.getTecnico() == null) {
@@ -69,13 +83,16 @@ public class ChamadoService {
         }
 
         chamado.setStatus(StatusChamado.CONCLUIDO);
+
+        return chamadoRepository.save(chamado);
     }
 
     public List<Chamado> listarChamados() {
-        return chamadoRepository.listarTodos();
+        return chamadoRepository.findAll();
     }
 
-    public Chamado buscarChamadoPorId(int id) {
-        return chamadoRepository.buscarPorId(id);
+    public Chamado buscarChamadoPorId(Integer id) {
+        return chamadoRepository.findById(id)
+                .orElse(null);
     }
 }

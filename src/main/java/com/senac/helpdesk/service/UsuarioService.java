@@ -8,10 +8,13 @@ package com.senac.helpdesk.service;
  *
  * @author davi
  */
+
 import com.senac.helpdesk.model.Usuario;
 import com.senac.helpdesk.repository.UsuarioRepository;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
@@ -20,7 +23,7 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public void cadastrarUsuario(Usuario usuario) {
+    public Usuario cadastrarUsuario(Usuario usuario) {
 
         if (usuario.getNome() == null || usuario.getNome().isBlank()) {
             throw new IllegalArgumentException("O nome do usuário é obrigatório.");
@@ -30,14 +33,15 @@ public class UsuarioService {
             throw new IllegalArgumentException("O e-mail do usuário é obrigatório.");
         }
 
-        usuarioRepository.salvar(usuario);
+        return usuarioRepository.save(usuario);
     }
 
     public List<Usuario> listarUsuarios() {
-        return usuarioRepository.listarTodos();
+        return usuarioRepository.findAll();
     }
 
-    public Usuario buscarUsuarioPorId(int id) {
-        return usuarioRepository.buscarPorId(id);
+    public Usuario buscarUsuarioPorId(Integer id) {
+        return usuarioRepository.findById(id)
+                .orElse(null);
     }
 }

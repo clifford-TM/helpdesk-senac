@@ -10,17 +10,28 @@ import com.senac.helpdesk.model.Prioridade;
 import com.senac.helpdesk.model.StatusChamado;
 import com.senac.helpdesk.model.Usuario;
 import com.senac.helpdesk.repository.ChamadoRepository;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ChamadoServiceTest {
 
     @Test
     public void deveAbrirChamadoComStatusAberto() {
 
-        ChamadoRepository repository = new ChamadoRepository();
-        ChamadoService service = new ChamadoService(repository);
+        ChamadoRepository repository =
+                mock(ChamadoRepository.class);
+
+        when(repository.save(any(Chamado.class)))
+                .thenAnswer(invocation ->
+                        invocation.getArgument(0));
+
+        ChamadoService service =
+                new ChamadoService(repository);
 
         Usuario solicitante =
                 new Usuario(1, "Carlos", "carlos@email.com");
@@ -48,8 +59,12 @@ public class ChamadoServiceTest {
     @Test
     public void deveAlterarStatusAoAtribuirTecnico() {
 
-        ChamadoRepository repository = new ChamadoRepository();
-        ChamadoService service = new ChamadoService(repository);
+        ChamadoRepository repository =
+                mock(ChamadoRepository.class);
+
+        when(repository.save(any(Chamado.class)))
+                .thenAnswer(invocation ->
+                        invocation.getArgument(0));
 
         Usuario solicitante =
                 new Usuario(1, "Carlos", "carlos@email.com");
@@ -68,6 +83,14 @@ public class ChamadoServiceTest {
                 Prioridade.ALTA,
                 solicitante
         );
+
+        when(repository.findById(1))
+                .thenReturn(
+                        java.util.Optional.of(chamado)
+                );
+
+        ChamadoService service =
+                new ChamadoService(repository);
 
         service.abrirChamado(chamado);
         service.atribuirTecnico(1, tecnico);

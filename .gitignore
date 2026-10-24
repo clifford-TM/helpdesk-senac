@@ -1,4 +1,6 @@
 target/
-nbproject/private/
+nbproject/
 *.class
-/nbproject/
+
+# Arquivos locais com credenciais
+src/main/resources/application.properties

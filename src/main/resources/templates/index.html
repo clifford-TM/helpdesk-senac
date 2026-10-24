@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>HelpDesk - Dashboard</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+
+  <body>
+    <header class="topo">
+      <div class="logo">HELPDESK</div>
+
+      <div class="busca-topo">
+        <input
+          type="text"
+          id="buscaChamados"
+          placeholder="Buscar chamados"
+        />
+      </div>
+
+      <div class="usuario">
+        <div class="icone-usuario">●</div>
+
+        <span>Usuário</span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <nav class="menu-lateral">
+        <a th:href="@{/}" class="ativo">
+          🏠 Início
+        </a>
+
+        <a th:href="@{/novo-chamado}">
+          🎫 Novo Chamado
+        </a>
+
+        <a th:href="@{/equipe}">
+          👥 Equipe
+        </a>
+
+        <a th:href="@{/relatorios}">
+          📊 Relatórios
+        </a>
+
+        <a th:href="@{/configuracoes}">
+          ⚙ Configurações
+        </a>
+      </nav>
+
+      <main class="conteudo">
+        <section class="cabecalho-pagina">
+          <h1>DASHBOARD</h1>
+          <p>Visão Geral dos Chamados</p>
+        </section>
+
+        <section class="cards">
+          <div class="card">
+            <div class="card-icone">📋</div>
+
+            <div>
+              <strong>Abertos</strong>
+              <span th:text="${abertos}">0</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-icone">🕒</div>
+
+            <div>
+              <strong>Em Atendimento</strong>
+              <span th:text="${emAtendimento}">0</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-icone">✓</div>
+
+            <div>
+              <strong>Concluído</strong>
+              <span th:text="${concluidos}">0</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="painel">
+          <div class="painel-titulo">
+            <h2>Últimos Chamados</h2>
+
+            <span>VER TODOS →</span>
+          </div>
+
+          <div class="tabela-container">
+            <table id="tabelaChamados">
+              <thead>
+                <tr>
+                  <th>#Ticket</th>
+                  <th>Título</th>
+                  <th>Status</th>
+                  <th>Prioridade</th>
+                  <th>Detalhes/Ações</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr th:each="chamado : ${chamados}">
+                  <td th:text="${'#' + chamado.id}">
+                    #001
+                  </td>
+
+                  <td th:text="${chamado.titulo}">
+                    Título do chamado
+                  </td>
+
+                  <td th:text="${chamado.status}">
+                    ABERTO
+                  </td>
+
+                  <td th:text="${chamado.prioridade}">
+                    ALTA
+                  </td>
+
+                  <td>
+                    <a
+                      class="botao-detalhes"
+                      th:href="@{/chamados/{id}(id=${chamado.id})}"
+                    >
+                      •••
+                    </a>
+                  </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(chamados)}">
+                  <td colspan="5">
+                    Nenhum chamado cadastrado.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script th:src="@{/js/script.js}"></script>
+  </body>
+</html>

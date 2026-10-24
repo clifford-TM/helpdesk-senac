@@ -8,26 +8,10 @@ package com.senac.helpdesk.repository;
  *
  * @author davi
  */
+
 import com.senac.helpdesk.model.Chamado;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public class ChamadoRepository {
-
-    private final List<Chamado> chamados = new ArrayList<>();
-
-    public void salvar(Chamado chamado) {
-        chamados.add(chamado);
-    }
-
-    public List<Chamado> listarTodos() {
-        return chamados;
-    }
-
-    public Chamado buscarPorId(int id) {
-        return chamados.stream()
-                .filter(chamado -> chamado.getId() == id)
-                .findFirst()
-                .orElse(null);
-    }
+public interface ChamadoRepository
+        extends JpaRepository<Chamado, Integer> {
 }
