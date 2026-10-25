@@ -9,7 +9,9 @@ import com.senac.helpdesk.model.Chamado;
 import com.senac.helpdesk.model.Prioridade;
 import com.senac.helpdesk.model.StatusChamado;
 import com.senac.helpdesk.model.Usuario;
+import com.senac.helpdesk.model.TipoUsuario;
 import com.senac.helpdesk.repository.ChamadoRepository;
+
 
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +36,13 @@ public class ChamadoServiceTest {
                 new ChamadoService(repository);
 
         Usuario solicitante =
-                new Usuario(1, "Carlos", "carlos@email.com");
+        new Usuario(
+                1,
+                "Carlos",
+                "carlos@email.com",
+                TipoUsuario.SOLICITANTE
+        );
+
 
         Categoria categoria =
                 new Categoria(1, "Hardware");
@@ -67,10 +75,20 @@ public class ChamadoServiceTest {
                         invocation.getArgument(0));
 
         Usuario solicitante =
-                new Usuario(1, "Carlos", "carlos@email.com");
+                new Usuario(
+                        1,
+                        "Carlos",
+                        "carlos@email.com",
+                        TipoUsuario.SOLICITANTE
+                );
 
         Usuario tecnico =
-                new Usuario(2, "Ana", "ana@email.com");
+                new Usuario(
+                        2,
+                        "Ana",
+                        "ana@email.com",
+                        TipoUsuario.TECNICO
+                );
 
         Categoria categoria =
                 new Categoria(1, "Hardware");

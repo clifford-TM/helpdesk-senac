@@ -14,6 +14,10 @@ import com.senac.helpdesk.model.StatusChamado;
 import com.senac.helpdesk.service.CategoriaService;
 import com.senac.helpdesk.service.ChamadoService;
 import com.senac.helpdesk.service.UsuarioService;
+import com.senac.helpdesk.model.Categoria;
+import com.senac.helpdesk.model.Prioridade;
+import com.senac.helpdesk.model.Usuario;
+import com.senac.helpdesk.model.TipoUsuario;
 
 import java.util.List;
 
@@ -21,6 +25,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HelpDeskController {
@@ -95,6 +101,11 @@ public class HelpDeskController {
 
         model.addAttribute("chamado", chamado);
 
+        model.addAttribute(
+                "usuarios",
+                usuarioService.listarTecnicos()
+        );
+
         return "detalhes-chamado";
     }
 
@@ -103,7 +114,7 @@ public class HelpDeskController {
 
         model.addAttribute(
                 "usuarios",
-                usuarioService.listarUsuarios()
+                usuarioService.listarTecnicos()
         );
 
         return "equipe";
@@ -145,4 +156,111 @@ public class HelpDeskController {
 
         return "configuracoes";
     }
+
+    @PostMapping("/novo-chamado")
+        public String cadastrarChamado(@RequestParam String titulo, @RequestParam String descricao, @RequestParam Integer categoriaId, @RequestParam String solicitante, @RequestParam String email) {
+
+        Categoria categoria =
+                categoriaService.buscarPorId(categoriaId);
+
+        if (categoria == null) {
+                return "redirect:/novo-chamado";
+        }
+
+        Usuario usuario =
+                new Usuario(
+                        null,
+                        solicitante,
+                        email,
+                        TipoUsuario.SOLICITANTE
+                );
+
+        usuarioService.cadastrarUsuario(usuario);
+
+        Prioridade prioridade;
+
+        switch (categoria.getNome().toLowerCase()) {
+
+                case "hardware":
+                prioridade = Prioridade.ALTA;
+                break;
+
+                case "rede":
+                case "software":
+                prioridade = Prioridade.MEDIA;
+                break;
+
+                default:
+                prioridade = Prioridade.BAIXA;
+                break;
+        }
+
+        Chamado chamado = new Chamado(
+                null,
+                titulo,
+                descricao,
+                categoria,
+                prioridade,
+                usuario
+        );
+
+        chamadoService.abrirChamado(chamado);
+
+        return "redirect:/";
+        }
+
+
+
+    @PostMapping("/chamados/{id}/atribuir")
+        public String atribuirTecnico(
+                @PathVariable Integer id,
+                @RequestParam Integer tecnicoId) {
+
+        Usuario tecnico =
+                usuarioService.buscarUsuarioPorId(tecnicoId);
+
+        if (tecnico != null) {
+                chamadoService.atribuirTecnico(id, tecnico);
+        }
+
+        return "redirect:/chamados/" + id;
+        }
+
+    @PostMapping("/chamados/{id}/concluir")
+        public String concluirChamado(
+                @PathVariable Integer id) {
+
+        chamadoService.concluirChamado(id);
+
+        return "redirect:/chamados/" + id;
+        }
+
+    @PostMapping("/equipe/cadastrar")
+        public String cadastrarTecnico(
+                @RequestParam String nome,
+                @RequestParam String email) {
+
+        Usuario tecnico = new Usuario(
+                null,
+                nome,
+                email,
+                TipoUsuario.TECNICO
+        );
+
+        usuarioService.cadastrarUsuario(tecnico);
+
+        return "redirect:/equipe";
+        }
+
+    @PostMapping("/equipe/{id}/excluir")
+        public String excluirTecnico(
+                @PathVariable Integer id) {
+
+        usuarioService.excluirUsuario(id);
+
+        return "redirect:/equipe";
+        }
+
 }
+
+

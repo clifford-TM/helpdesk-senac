@@ -1,15 +1,87 @@
-<!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>HelpDesk - Relatórios</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+
+  <body>
+    <header class="topo">
+      <div class="logo">HELPDESK</div>
+
+      <div class="busca-topo">
+        <input type="text" placeholder="Buscar chamados" />
+      </div>
+
+      <div class="usuario">
+        <div class="icone-usuario">●</div>
+        <span>Usuário</span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <nav class="menu-lateral">
+        <a th:href="@{/}"> 🏠 Início </a>
+
+        <a th:href="@{/novo-chamado}"> 🎫 Novo Chamado </a>
+
+        <a th:href="@{/equipe}"> 👥 Equipe </a>
+
+        <a th:href="@{/relatorios}" class="ativo"> 📊 Relatórios </a>
+
+        <a th:href="@{/configuracoes}"> ⚙ Configurações </a>
+      </nav>
+
+      <main class="conteudo">
+        <section class="cabecalho-pagina">
+          <h1>RELATÓRIOS</h1>
+          <p>Resumo geral dos chamados.</p>
+        </section>
+
+        <section class="cards relatorio-cards">
+          <div class="card">
+            <div class="card-icone">📋</div>
+
+            <div>
+              <strong>Total</strong>
+              <span th:text="${total}">0</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-icone">📝</div>
+
+            <div>
+              <strong>Abertos</strong>
+              <span th:text="${abertos}">0</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-icone">🕒</div>
+
+            <div>
+              <strong>Em Atendimento</strong>
+              <span th:text="${emAtendimento}">0</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-icone">✓</div>
+
+            <div>
+              <strong>Concluídos</strong>
+              <span th:text="${concluidos}">0</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script th:src="@{/js/script.js}"></script>
+  </body>
 </html>

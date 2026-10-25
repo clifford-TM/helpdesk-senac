@@ -10,6 +10,8 @@ package com.senac.helpdesk.model;
  */
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,13 +28,22 @@ public class Usuario {
     private String nome;
     private String email;
 
+    @Enumerated(EnumType.STRING)
+    private TipoUsuario tipo;
+
     public Usuario() {
     }
 
-    public Usuario(Integer id, String nome, String email) {
+    public Usuario(
+            Integer id,
+            String nome,
+            String email,
+            TipoUsuario tipo) {
+
         this.id = id;
         this.nome = nome;
         this.email = email;
+        this.tipo = tipo;
     }
 
     public Integer getId() {
@@ -59,8 +70,16 @@ public class Usuario {
         this.email = email;
     }
 
+    public TipoUsuario getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoUsuario tipo) {
+        this.tipo = tipo;
+    }
+
     @Override
     public String toString() {
-        return nome + " - " + email;
+        return nome + " - " + email + " - " + tipo;
     }
 }

@@ -9,9 +9,13 @@ package com.senac.helpdesk.repository;
  * @author davi
  */
 
+import com.senac.helpdesk.model.TipoUsuario;
 import com.senac.helpdesk.model.Usuario;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UsuarioRepository
         extends JpaRepository<Usuario, Integer> {
+
+    List<Usuario> findByTipo(TipoUsuario tipo);
 }

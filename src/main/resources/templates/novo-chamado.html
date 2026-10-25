@@ -1,15 +1,206 @@
-<!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>HelpDesk - Novo Chamado</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+
+  <body>
+    <header class="topo">
+      <div class="logo">HELPDESK</div>
+
+      <div class="busca-topo">
+        <input type="text" placeholder="Buscar chamados" />
+      </div>
+
+      <div class="usuario">
+        <div class="icone-usuario">●</div>
+        <span>Usuário</span>
+      </div>
+    </header>
+
+    <div class="layout">
+
+      <nav class="menu-lateral">
+
+        <a th:href="@{/}">
+          🏠 Início
+        </a>
+
+        <a th:href="@{/novo-chamado}" class="ativo">
+          🎫 Novo Chamado
+        </a>
+
+        <a th:href="@{/equipe}">
+          👥 Equipe
+        </a>
+
+        <a th:href="@{/relatorios}">
+          📊 Relatórios
+        </a>
+
+        <a th:href="@{/configuracoes}">
+          ⚙ Configurações
+        </a>
+
+      </nav>
+
+      <main class="conteudo">
+
+        <section class="cabecalho-pagina">
+          <h1>NOVO CHAMADO</h1>
+          <p>Preencha as informações para abrir um novo chamado.</p>
+        </section>
+
+        <section class="formulario-container">
+
+          <form
+            id="formChamado"
+            th:action="@{/novo-chamado}"
+            method="post"
+          >
+
+            <div class="campo campo-grande">
+
+              <label for="titulo">
+                Título
+              </label>
+
+              <input
+                type="text"
+                id="titulo"
+                name="titulo"
+                required
+              />
+
+            </div>
+
+            <div class="campo campo-grande">
+
+              <label for="descricao">
+                Descrição
+              </label>
+
+              <textarea
+                id="descricao"
+                name="descricao"
+                rows="8"
+                required
+              ></textarea>
+
+            </div>
+
+            <div class="linha-formulario">
+
+              <div class="campo">
+
+                <label for="categoria">
+                  Categoria
+                </label>
+
+                <select
+                  id="categoria"
+                  name="categoriaId"
+                  required
+                >
+
+                  <option value="">
+                    Selecione uma categoria
+                  </option>
+
+                  <option
+                    th:each="categoria : ${categorias}"
+                    th:value="${categoria.id}"
+                    th:text="${categoria.nome}"
+                  >
+                    Categoria
+                  </option>
+
+                </select>
+
+              </div>
+
+              <div class="campo">
+
+                <label for="prioridade">
+                  Prioridade
+                </label>
+
+                <input
+                  type="text"
+                  id="prioridade"
+                  value="Automático"
+                  readonly
+                />
+
+              </div>
+
+            </div>
+
+            <div class="linha-formulario">
+
+              <div class="campo">
+
+                <label for="solicitante">
+                  Solicitante
+                </label>
+
+                <input
+                  type="text"
+                  id="solicitante"
+                  name="solicitante"
+                  required
+                />
+
+              </div>
+
+              <div class="campo">
+
+                <label for="email">
+                  Email
+                </label>
+
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                />
+
+              </div>
+
+            </div>
+
+            <div class="acoes-formulario">
+
+              <button
+                type="submit"
+                class="botao-principal"
+              >
+                Abrir chamado
+              </button>
+
+              <a
+                th:href="@{/}"
+                class="botao-secundario"
+              >
+                Cancelar
+              </a>
+
+            </div>
+
+          </form>
+
+        </section>
+
+      </main>
+
+    </div>
+
+    <script th:src="@{/js/script.js}"></script>
+  </body>
 </html>

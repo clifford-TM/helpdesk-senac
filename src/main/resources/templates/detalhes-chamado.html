@@ -1,15 +1,160 @@
-<!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>HelpDesk - Detalhes do Chamado</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+
+  <body>
+    <header class="topo">
+      <div class="logo">HELPDESK</div>
+
+      <div class="busca-topo">
+        <input type="text" placeholder="Buscar chamados" />
+      </div>
+
+      <div class="usuario">
+        <div class="icone-usuario">●</div>
+        <span>Usuário</span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <nav class="menu-lateral">
+        <a th:href="@{/}"> 🏠 Início </a>
+
+        <a th:href="@{/novo-chamado}"> 🎫 Novo Chamado </a>
+
+        <a th:href="@{/equipe}"> 👥 Equipe </a>
+
+        <a th:href="@{/relatorios}"> 📊 Relatórios </a>
+
+        <a th:href="@{/configuracoes}"> ⚙ Configurações </a>
+      </nav>
+
+      <main class="conteudo">
+        <section class="cabecalho-pagina">
+          <h1>DETALHES DO CHAMADO</h1>
+
+          <p>Visualize as informações completas do chamado.</p>
+        </section>
+
+        <section class="painel detalhes">
+          <div class="painel-titulo">
+            <h2>Informações do Chamado</h2>
+          </div>
+
+          <div class="grade-detalhes">
+            <div class="item-detalhe">
+              <strong>Número do chamado:</strong>
+
+              <span th:text="${'#' + chamado.id}"> #001 </span>
+            </div>
+
+            <div class="item-detalhe">
+              <strong>Status:</strong>
+
+              <span
+                id="statusChamado"
+                class="status"
+                th:text="${chamado.status}"
+              >
+                ABERTO
+              </span>
+            </div>
+
+            <div class="item-detalhe">
+              <strong>Título:</strong>
+
+              <span th:text="${chamado.titulo}"> Computador não liga </span>
+            </div>
+
+            <div class="item-detalhe">
+              <strong>Categoria:</strong>
+
+              <span th:text="${chamado.categoria.nome}"> Hardware </span>
+            </div>
+
+            <div class="item-detalhe">
+              <strong>Solicitante:</strong>
+
+              <span th:text="${chamado.solicitante.nome}"> Carlos Silva </span>
+            </div>
+
+            <div class="item-detalhe">
+              <strong>Prioridade:</strong>
+
+              <span th:text="${chamado.prioridade}"> ALTA </span>
+            </div>
+
+            <div class="item-detalhe">
+              <strong>Técnico:</strong>
+
+              <span
+                th:if="${chamado.tecnico != null}"
+                th:text="${chamado.tecnico.nome}"
+              >
+                Ana
+              </span>
+
+              <span th:if="${chamado.tecnico == null}"> Não atribuído </span>
+            </div>
+          </div>
+
+          <div class="descricao-detalhes">
+            <strong>Descrição:</strong>
+
+            <p th:text="${chamado.descricao}">Descrição do chamado.</p>
+          </div>
+
+          <!-- ATRIBUIÇÃO DE TÉCNICO -->
+
+          <div class="acoes-detalhes" th:if="${chamado.tecnico == null}">
+            <form
+              th:action="@{/chamados/{id}/atribuir(id=${chamado.id})}"
+              method="post"
+            >
+              <select name="tecnicoId" required>
+                <option value="">Selecione um técnico</option>
+
+                <option
+                  th:each="usuario : ${usuarios}"
+                  th:value="${usuario.id}"
+                  th:text="${usuario.nome}"
+                >
+                  Usuário
+                </option>
+              </select>
+
+              <button type="submit" class="botao-principal">
+                Atribuir técnico
+              </button>
+            </form>
+          </div>
+
+          <!-- CONCLUSÃO -->
+
+          <div class="acoes-detalhes">
+            <form
+              th:if="${chamado.tecnico != null and chamado.status.name() != 'CONCLUIDO'}"
+              th:action="@{/chamados/{id}/concluir(id=${chamado.id})}"
+              method="post"
+            >
+              <button type="submit" id="btnConcluir" class="botao-principal">
+                Concluir chamado
+              </button>
+            </form>
+
+            <a th:href="@{/}" class="botao-secundario"> Voltar </a>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script th:src="@{/js/script.js}"></script>
+  </body>
 </html>

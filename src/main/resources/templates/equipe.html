@@ -1,15 +1,125 @@
-<!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>HelpDesk - Equipe</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+
+  <body>
+    <header class="topo">
+      <div class="logo">HELPDESK</div>
+
+      <div class="busca-topo">
+        <input type="text" placeholder="Buscar chamados" />
+      </div>
+
+      <div class="usuario">
+        <div class="icone-usuario">●</div>
+        <span>Usuário</span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <nav class="menu-lateral">
+        <a th:href="@{/}"> 🏠 Início </a>
+
+        <a th:href="@{/novo-chamado}"> 🎫 Novo Chamado </a>
+
+        <a th:href="@{/equipe}" class="ativo"> 👥 Equipe </a>
+
+        <a th:href="@{/relatorios}"> 📊 Relatórios </a>
+
+        <a th:href="@{/configuracoes}"> ⚙ Configurações </a>
+      </nav>
+
+      <main class="conteudo">
+        <section class="cabecalho-pagina">
+          <h1>EQUIPE</h1>
+          <p>Gerencie os técnicos disponíveis no sistema.</p>
+        </section>
+
+        <section class="formulario-container">
+          <form th:action="@{/equipe/cadastrar}" method="post">
+            <div class="linha-formulario">
+              <div class="campo">
+                <label for="nome">Nome</label>
+
+                <input type="text" id="nome" name="nome" required />
+              </div>
+
+              <div class="campo">
+                <label for="email">E-mail</label>
+
+                <input type="email" id="email" name="email" required />
+              </div>
+            </div>
+
+            <div class="acoes-formulario">
+              <button type="submit" class="botao-principal">
+                Cadastrar técnico
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <br />
+
+        <section class="painel">
+          <div class="painel-titulo">
+            <h2>Técnicos cadastrados</h2>
+          </div>
+
+          <div class="tabela-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>E-mail</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr th:each="usuario : ${usuarios}">
+                  <td th:text="${usuario.id}">1</td>
+
+                  <td th:text="${usuario.nome}">Ana</td>
+
+                  <td th:text="${usuario.email}">ana@email.com</td>
+
+                  <td>
+                    <form
+                      th:action="@{/equipe/{id}/excluir(id=${usuario.id})}"
+                      method="post"
+                    >
+                      <button
+                        type="submit"
+                        class="botao-secundario"
+                        onclick="
+                          return confirm('Deseja excluir este técnico?');
+                        "
+                      >
+                        Excluir
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(usuarios)}">
+                  <td colspan="4">Nenhum técnico cadastrado.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script th:src="@{/js/script.js}"></script>
+  </body>
 </html>
