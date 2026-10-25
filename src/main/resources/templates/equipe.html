@@ -41,6 +41,9 @@
           <h1>EQUIPE</h1>
           <p>Gerencie os técnicos disponíveis no sistema.</p>
         </section>
+        <p th:if="${erro}" th:text="${erro}" class="mensagem erro"></p>
+
+        <p th:if="${sucesso}" th:text="${sucesso}" class="mensagem sucesso"></p>
 
         <section class="formulario-container">
           <form th:action="@{/equipe/cadastrar}" method="post">

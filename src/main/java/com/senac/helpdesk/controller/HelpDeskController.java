@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class HelpDeskController {
@@ -168,14 +169,10 @@ public class HelpDeskController {
         }
 
         Usuario usuario =
-                new Usuario(
-                        null,
+                usuarioService.buscarOuCadastrarSolicitante(
                         solicitante,
-                        email,
-                        TipoUsuario.SOLICITANTE
+                        email
                 );
-
-        usuarioService.cadastrarUsuario(usuario);
 
         Prioridade prioridade;
 
@@ -238,16 +235,25 @@ public class HelpDeskController {
     @PostMapping("/equipe/cadastrar")
         public String cadastrarTecnico(
                 @RequestParam String nome,
-                @RequestParam String email) {
+                @RequestParam String email,
+                RedirectAttributes redirectAttributes) {
 
-        Usuario tecnico = new Usuario(
-                null,
-                nome,
-                email,
-                TipoUsuario.TECNICO
-        );
+        try {
 
-        usuarioService.cadastrarUsuario(tecnico);
+                usuarioService.cadastrarTecnico(nome, email);
+
+                redirectAttributes.addFlashAttribute(
+                        "sucesso",
+                        "Técnico cadastrado com sucesso."
+                );
+
+        } catch (IllegalArgumentException e) {
+
+                redirectAttributes.addFlashAttribute(
+                        "erro",
+                        e.getMessage()
+                );
+        }
 
         return "redirect:/equipe";
         }

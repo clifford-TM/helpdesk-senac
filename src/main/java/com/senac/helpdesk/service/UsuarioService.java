@@ -65,4 +65,51 @@ public class UsuarioService {
     public void excluirUsuario(Integer id) {
         usuarioRepository.deleteById(id);
     }
+
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email)
+                .orElse(null);
+    }
+
+    public Usuario buscarOuCadastrarSolicitante(
+        String nome,
+        String email) {
+
+        Usuario existente = buscarPorEmail(email);
+
+        if (existente != null) {
+            return existente;
+        }
+
+        Usuario solicitante = new Usuario(
+                null,
+                nome,
+                email,
+                TipoUsuario.SOLICITANTE
+        );
+
+        return cadastrarUsuario(solicitante);
+    }
+
+    public Usuario cadastrarTecnico(
+            String nome,
+            String email) {
+
+        Usuario existente = buscarPorEmail(email);
+
+        if (existente != null) {
+            throw new IllegalArgumentException(
+                    "E-mail já cadastrado."
+            );
+        }
+
+        Usuario tecnico = new Usuario(
+                null,
+                nome,
+                email,
+                TipoUsuario.TECNICO
+        );
+
+        return cadastrarUsuario(tecnico);
+    }
 }

@@ -4,6 +4,7 @@ import com.senac.helpdesk.model.TipoUsuario;
 import com.senac.helpdesk.model.Usuario;
 import com.senac.helpdesk.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -12,6 +13,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class UsuarioServiceTest {
 
@@ -107,4 +110,76 @@ public class UsuarioServiceTest {
 
         verify(repository, never()).save(any(Usuario.class));
     }
+
+        @Test
+        public void naoDeveDuplicarSolicitanteComMesmoEmail() {
+
+        UsuarioRepository repository =
+                mock(UsuarioRepository.class);
+
+        Usuario existente = new Usuario(
+                1,
+                "Davi",
+                "davi@email.com",
+                TipoUsuario.SOLICITANTE
+        );
+
+        when(repository.findByEmail("davi@email.com"))
+                .thenReturn(Optional.of(existente));
+
+        UsuarioService service =
+                new UsuarioService(repository);
+
+        Usuario resultado =
+                service.buscarOuCadastrarSolicitante(
+                        "Davi",
+                        "davi@email.com"
+                );
+
+        assertSame(existente, resultado);
+
+        verify(
+                repository,
+                never()
+        ).save(any(Usuario.class));
+        }
+
+        @Test
+        public void naoDeveCadastrarTecnicoComEmailDuplicado() {
+
+        UsuarioRepository repository =
+                mock(UsuarioRepository.class);
+
+        Usuario existente = new Usuario(
+                1,
+                "Ana",
+                "ana@email.com",
+                TipoUsuario.TECNICO
+        );
+
+        when(repository.findByEmail("ana@email.com"))
+                .thenReturn(Optional.of(existente));
+
+        UsuarioService service =
+                new UsuarioService(repository);
+
+        IllegalArgumentException exception =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> service.cadastrarTecnico(
+                                "Ana",
+                                "ana@email.com"
+                        )
+                );
+
+        assertEquals(
+                "E-mail já cadastrado.",
+                exception.getMessage()
+        );
+
+        verify(
+                repository,
+                never()
+        ).save(any(Usuario.class));
+        }
 }
